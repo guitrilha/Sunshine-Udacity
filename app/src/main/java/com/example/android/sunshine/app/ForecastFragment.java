@@ -14,6 +14,10 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import com.example.android.sunshine.app.util.WeatherDataParser;
+
+import org.json.JSONException;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,6 +32,7 @@ import java.util.Arrays;
  */
 public class ForecastFragment extends Fragment {
 
+    public ArrayAdapter<String> mForecastAdapter;
     String[] forecastArray = {
             "Hoje - Sunny - 19/26",
             "Amanhã- Foggy - 17/20",
@@ -46,7 +51,7 @@ public class ForecastFragment extends Fragment {
         setHasOptionsMenu(true);
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
         ArrayList<String> itensForecast = new ArrayList(Arrays.asList(forecastArray));
-        ArrayAdapter<String> mForecastAdapter = new ArrayAdapter<String>(getActivity(), R.layout.list_item_forecast, R.id.list_item_forecast_textview, itensForecast);
+        mForecastAdapter = new ArrayAdapter<String>(getActivity(), R.layout.list_item_forecast, R.id.list_item_forecast_textview, itensForecast);
         ListView listForecast = (ListView) rootView.findViewById(R.id.listview_forecast);
         listForecast.setAdapter(mForecastAdapter);
         return rootView;
@@ -76,12 +81,13 @@ public class ForecastFragment extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
-    public class FetchWeatherTask extends AsyncTask<String, Void, String> {
+    public class FetchWeatherTask extends AsyncTask<String, Void, String[]> {
 
         private final String LOG_TAG = FetchWeatherTask.class.getSimpleName();
         private final String API_KEY = "3198c75d40b18dbebf5fb5323d704055";
         private final String FORECAST_BASE_URL = "http://api.openweathermap.org/data/2.5/forecast/daily?";
         private final String QUERY_PARAM = "q";
+        private final String LANG_PARAM = "lang";
         private final String FORMAT_PARAM = "mode";
         private final String UNITS_PARAM = "units";
         private final String DAYS_PARAM = "cnt";
@@ -89,11 +95,12 @@ public class ForecastFragment extends Fragment {
 
 
         @Override
-        protected String doInBackground(String... params) {
+        protected String[] doInBackground(String... params) {
             if (params.length == 0)
                 return null;
 
             String postalCode = params[0];
+            String language = "pt";
             String format = "json";
             String units = "metric";
             int days = 7;
@@ -111,6 +118,7 @@ public class ForecastFragment extends Fragment {
                 // http://openweathermap.org/API#forecast
                 Uri builtUri = Uri.parse(FORECAST_BASE_URL).buildUpon()
                         .appendQueryParameter(QUERY_PARAM, postalCode)
+                        .appendQueryParameter(LANG_PARAM, language)
                         .appendQueryParameter(FORMAT_PARAM, format)
                         .appendQueryParameter(UNITS_PARAM, units)
                         .appendQueryParameter(DAYS_PARAM, Integer.toString(days))
@@ -164,13 +172,20 @@ public class ForecastFragment extends Fragment {
                     }
                 }
             }
-            return forecastJsonStr;
+            try {
+                return WeatherDataParser.getWeatherDataFromJson(forecastJsonStr, 7);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return null;
         }
 
         @Override
-        protected void onPostExecute(String s) {
-            super.onPostExecute(s);
-            System.out.println(s);
+        protected void onPostExecute(String[] result) {
+            if (result != null) {
+                mForecastAdapter.clear();
+                mForecastAdapter.addAll(result);
+            }
         }
     }
 }
