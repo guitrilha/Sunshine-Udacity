@@ -7,4 +7,22 @@
     <string name="label_refresh">Refresh</string>
     <string name="title_activity_detail">DetailActivity</string>
 
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+
+    <string name="settings_local_defaultValue">88030</string>
+    <string name="settings_local_key">location</string>
+    <string name="settings_local_title">Código Postal do Local (5 dígitos)</string>
+
+
+    <string name="settings_temperature_defaultValue">Celsius</string>
+    <string name="settings_temperature_key">temperature</string>
+    <string name="settings_temperature_title">Temperatura</string>
+
+    <string-array name="temperatureValues">
+        <item>"Celsius"</item>
+        <item>"Fahrenheit"</item>
+    </string-array>
+
 </resources>
