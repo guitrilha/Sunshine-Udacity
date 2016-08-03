@@ -3,7 +3,12 @@
 
     <string name="app_name">Sunshine</string>
     <string name="hello_world">Hello world!</string>
+
+
+
     <string name="action_settings">Settings</string>
+    <string name="action_share">Share</string>
+    <string name="action_map">Map Location</string>
     <string name="label_refresh">Refresh</string>
     <string name="title_activity_detail">DetailActivity</string>
 
@@ -11,7 +16,7 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
 
-    <string name="settings_local_defaultValue">88030</string>
+    <string name="settings_local_defaultValue">88036</string>
     <string name="settings_local_key">location</string>
     <string name="settings_local_title">Código Postal do Local (5 dígitos)</string>
 
